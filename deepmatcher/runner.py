@@ -156,6 +156,9 @@ class Runner(object):
              sort_in_buckets=None,
              return_predictions=False,
              **kwargs):
+            #metric=f1
+            #metric can be f1, recall or precision
+                   
 
         if device is None:
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -265,7 +268,12 @@ class Runner(object):
         if return_predictions:
             return predictions
         else:
-            return cum_stats.f1()
+            #if metric == "f1":
+            return cum_stats.f1()#->
+            #else if metric == "recall":
+                #return cum_stats.recall()
+            #else if metric == "precision":
+                    #return cum_stats.precision()
 
     @staticmethod
     def train(model,
@@ -281,6 +289,8 @@ class Runner(object):
               save_every_prefix=None,
               save_every_freq=1,
               **kwargs):
+              #metric=f1
+              #metric can be chang3ed to f1, recall, or precision
         """run_train(model, train_dataset, validation_dataset, best_save_path,epochs=30, \
             criterion=None, optimizer=None, pos_neg_ratio=None, pos_weight=None, \
             label_smoothing=0.05, save_every_prefix=None, save_every_freq=None, \
@@ -336,15 +346,22 @@ class Runner(object):
         for epoch in epochs_range:
             model.epoch = epoch
             Runner._run(
-                'TRAIN', model, train_dataset, criterion, optimizer, train=True, **kwargs)
+                'TRAIN', model, train_dataset, criterion, optimizer, train=True, **kwargs)#,metric=metric
 
-            score = Runner._run('EVAL', model, validation_dataset, train=False, **kwargs)
+            score = Runner._run('EVAL', model, validation_dataset, train=False, **kwargs)#,metric=metric
 
             optimizer.update_learning_rate(score, epoch + 1)
             model.optimizer_state = optimizer.base_optimizer.state_dict()
 
             new_best_found = False
+            #if metric == "f1":
+                    #measured_metric = "F1"
+            #else if metric == "recall":
+                    #measured_metric = "RECALL"
+            #else if metric == "precision":
+                    #measured_metric = "PRECISION"
             if score > model.best_score:
+                #print(f"* Best {measured_metric}: {score}")
                 print('* Best F1:', score)
                 model.best_score = score
                 new_best_found = True
@@ -379,7 +396,7 @@ class Runner(object):
         Returns:
             float: The F1 score obtained by the model on the dataset.
         """
-        return Runner._run('EVAL', model, dataset, **kwargs)
+        return Runner._run('EVAL', model, dataset, **kwargs)#,metric=f1
 
     def predict(model, dataset, output_attributes=False, **kwargs):
         """predict(model, dataset, output_attributes=False, device=None, batch_size=32, \
@@ -400,7 +417,7 @@ class Runner(object):
         model._reset_embeddings(dataset.vocabs)
 
         predictions = Runner._run(
-            'PREDICT', model, dataset, return_predictions=True, **kwargs)
+            'PREDICT', model, dataset, return_predictions=True, **kwargs)#,metric=f1
         pred_table = pd.DataFrame(predictions, columns=(dataset.id_field, 'match_score'))
         pred_table = pred_table.set_index(dataset.id_field)
 
