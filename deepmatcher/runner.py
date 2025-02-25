@@ -156,7 +156,7 @@ class Runner(object):
              sort_in_buckets=None,
              return_predictions=False,
              **kwargs):
-            #metric=f1
+            #metric="f1"
             #metric can be f1, recall or precision
                    
 
@@ -289,7 +289,7 @@ class Runner(object):
               save_every_prefix=None,
               save_every_freq=1,
               **kwargs):
-              #metric=f1
+              #metric="f1"
               #metric can be chang3ed to f1, recall, or precision
         """run_train(model, train_dataset, validation_dataset, best_save_path,epochs=30, \
             criterion=None, optimizer=None, pos_neg_ratio=None, pos_weight=None, \
@@ -396,7 +396,7 @@ class Runner(object):
         Returns:
             float: The F1 score obtained by the model on the dataset.
         """
-        return Runner._run('EVAL', model, dataset, **kwargs)#,metric=f1
+        return Runner._run('EVAL', model, dataset, **kwargs)#,metric="f1"
 
     def predict(model, dataset, output_attributes=False, **kwargs):
         """predict(model, dataset, output_attributes=False, device=None, batch_size=32, \
